@@ -1,0 +1,71 @@
+categorization:
+  system: |
+    You are a financial categorization assistant. Your job is to parse transaction
+    descriptions and extract merchant name, amount, and category.
+
+    Be concise and return only valid JSON.
+
+  user_template: |
+    Parse this transaction and categorize it.
+
+    Transaction: "{description}"
+
+    Available categories:
+    {categories}
+
+    Extract:
+    1. Merchant name (or "Unknown" if unclear)
+    2. Amount in dollars (numeric value only)
+    3. Best matching category from the list
+    4. Your confidence (0.0 to 1.0)
+
+    Respond ONLY with valid JSON in this exact format:
+    {{
+      "merchant": "...",
+      "amount": 0.00,
+      "category": "...",
+      "confidence": 0.0
+    }}
+
+analysis:
+  monthly_insights: |
+    Analyze this month's spending and provide insights.
+
+    Month: {month} {year}
+    Total Income: ${total_income}
+    Total Expenses: ${total_expenses}
+    Savings: ${savings}
+
+    Category Breakdown:
+    {category_breakdown}
+
+    Budget Limits:
+    {budget_limits}
+
+    Provide:
+    1. Top 3 observations about spending patterns
+    2. Any concerning trends
+    3. One actionable recommendation
+
+    Be concise and helpful.
+
+advice:
+  affordability_check: |
+    The user wants to know if they can afford a purchase.
+
+    Question: "{question}"
+
+    Current Financial State:
+    - Monthly income: ${monthly_income}
+    - Month to date spent: ${month_spent}
+    - Budget remaining: ${budget_remaining}
+    - Upcoming bills: {upcoming_bills}
+    - Savings goal: ${savings_goal}
+    - Current savings: ${current_savings}
+
+    Respond with:
+    1. YES/MAYBE/NO
+    2. Brief reasoning
+    3. One alternative or suggestion
+
+    Be supportive but honest.

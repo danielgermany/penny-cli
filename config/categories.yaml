@@ -1,0 +1,146 @@
+categories:
+  - name: "Food & Dining"
+    subcategories:
+      - name: "Groceries"
+        keywords:
+          - "whole foods"
+          - "trader joe"
+          - "safeway"
+          - "kroger"
+          - "walmart"
+          - "target"
+          - "costco"
+        default_budget: 600
+
+      - name: "Restaurants"
+        keywords:
+          - "restaurant"
+          - "cafe"
+          - "chipotle"
+          - "panera"
+          - "starbucks"
+          - "coffee"
+        default_budget: 300
+
+      - name: "Fast Food"
+        keywords:
+          - "mcdonald"
+          - "burger king"
+          - "taco bell"
+          - "subway"
+          - "wendy"
+        default_budget: 100
+
+  - name: "Transportation"
+    subcategories:
+      - name: "Gas"
+        keywords:
+          - "shell"
+          - "chevron"
+          - "exxon"
+          - "bp"
+          - "mobil"
+          - "gas station"
+        default_budget: 150
+
+      - name: "Public Transit"
+        keywords:
+          - "metro"
+          - "mta"
+          - "bart"
+          - "transit"
+          - "subway"
+        default_budget: 100
+
+      - name: "Rideshare"
+        keywords:
+          - "uber"
+          - "lyft"
+          - "taxi"
+        default_budget: 80
+
+  - name: "Housing"
+    subcategories:
+      - name: "Rent/Mortgage"
+        keywords:
+          - "rent"
+          - "mortgage"
+          - "landlord"
+
+      - name: "Utilities"
+        keywords:
+          - "electric"
+          - "gas bill"
+          - "water"
+          - "internet"
+          - "comcast"
+          - "verizon"
+        default_budget: 200
+
+  - name: "Shopping"
+    subcategories:
+      - name: "Clothing"
+        keywords:
+          - "clothing"
+          - "shoes"
+          - "apparel"
+          - "nike"
+          - "adidas"
+        default_budget: 150
+
+      - name: "Electronics"
+        keywords:
+          - "best buy"
+          - "apple"
+          - "electronics"
+        default_budget: 200
+
+      - name: "General"
+        keywords:
+          - "amazon"
+          - "target"
+          - "walmart"
+        default_budget: 200
+
+  - name: "Entertainment"
+    subcategories:
+      - name: "Streaming"
+        keywords:
+          - "netflix"
+          - "spotify"
+          - "hulu"
+          - "disney"
+          - "amazon prime"
+        default_budget: 50
+
+      - name: "Activities"
+        keywords:
+          - "movie"
+          - "theater"
+          - "concert"
+          - "sports"
+        default_budget: 100
+
+  - name: "Healthcare"
+    subcategories:
+      - name: "Medical"
+        keywords:
+          - "doctor"
+          - "hospital"
+          - "clinic"
+          - "pharmacy"
+          - "cvs"
+          - "walgreens"
+
+      - name: "Fitness"
+        keywords:
+          - "gym"
+          - "fitness"
+          - "yoga"
+        default_budget: 100
+
+  - name: "Other"
+    subcategories:
+      - name: "Miscellaneous"
+        keywords: []
+        default_budget: 200
