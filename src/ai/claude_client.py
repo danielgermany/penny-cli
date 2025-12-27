@@ -130,20 +130,16 @@ Respond ONLY with valid JSON in this exact format:
         Returns:
             Dict with parsed data
         """
-        # Try to extract amount using regex
-        # Prioritize $ sign patterns first
-        amount_match = re.search(r'\$(\d+(?:\.\d+)?)', description)
-        if not amount_match:
-            # Fallback to any decimal number
-            amount_match = re.search(r'(\d+\.\d+)', description)
+        # Find all numbers (integer or decimal) in the description
+        numbers = re.findall(r'\d+\.?\d*', description)
 
-        if amount_match:
-            amount = float(amount_match.group(1))
-        else:
-            amount = 0.0
+        # Convert to floats and take the largest one as the amount
+        amounts = [float(n) for n in numbers if n]
+        amount = max(amounts) if amounts else 0.0
 
         # Remove amount from description to get merchant
-        merchant = re.sub(r'\$\d+(?:\.\d+)?|\d+\.\d+', '', description).strip()
+        merchant = re.sub(r'[\$]?\d+\.?\d*', '', description).strip()
+        merchant = re.sub(r'\s+', ' ', merchant).strip()  # Clean up extra spaces
         merchant = merchant or "Unknown"
 
         return {
