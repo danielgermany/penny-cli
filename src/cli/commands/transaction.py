@@ -217,6 +217,64 @@ def search_transactions(ctx, query, limit, category, account, start_date, end_da
         raise
 
 
+@transaction.command("edit")
+@click.argument("transaction_id", type=int)
+@click.option("--merchant", "-m", help="Update merchant name")
+@click.option("--amount", "-a", type=float, help="Update amount")
+@click.option("--category", "-c", help="Update category")
+@click.option("--date", "-d", help="Update date (YYYY-MM-DD)")
+@click.option("--notes", "-n", help="Update notes")
+@click.option("--description", help="Update description")
+@click.pass_context
+def edit_transaction(ctx, transaction_id, merchant, amount, category, date, notes, description):
+    """
+    Edit an existing transaction.
+
+    Example: finance transaction edit 5 --amount 12.50 --category "Food & Dining - Restaurants"
+    """
+    container = ctx.obj["container"]
+
+    try:
+        # Check if any fields are being updated
+        if not any([merchant, amount, category, date, notes, description]):
+            print_error("No fields to update. Use --help to see available options.")
+            return
+
+        # Get current transaction
+        tx = container.transaction_service().get_transaction(transaction_id)
+        print_info(f"Current: {tx['merchant']} - ${tx['amount']:.2f} - {tx['category']}")
+
+        # Parse date if provided
+        parsed_date = None
+        if date:
+            try:
+                parsed_date = datetime.strptime(date, "%Y-%m-%d").date()
+            except ValueError:
+                print_error("Invalid date format. Use YYYY-MM-DD")
+                return
+
+        # Convert amount to Decimal if provided
+        new_amount = Decimal(str(amount)) if amount is not None else None
+
+        # Edit transaction
+        updated_tx = container.transaction_service().edit_transaction(
+            transaction_id=transaction_id,
+            merchant=merchant,
+            amount=new_amount,
+            category=category,
+            transaction_date=parsed_date,
+            notes=notes,
+            description=description,
+        )
+
+        print_success(f"Transaction {transaction_id} updated")
+        print_info(f"New: {updated_tx['merchant']} - ${updated_tx['amount']:.2f} - {updated_tx['category']}")
+
+    except Exception as e:
+        print_error(f"Failed to edit transaction: {str(e)}")
+        raise
+
+
 @transaction.command("delete")
 @click.argument("transaction_id", type=int)
 @click.pass_context

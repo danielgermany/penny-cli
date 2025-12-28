@@ -353,3 +353,74 @@ class TransactionService:
             transaction_type=transaction_type,
             limit=limit,
         )
+
+    def edit_transaction(
+        self,
+        transaction_id: int,
+        merchant: Optional[str] = None,
+        amount: Optional[Decimal] = None,
+        category: Optional[str] = None,
+        transaction_date: Optional[date] = None,
+        notes: Optional[str] = None,
+        description: Optional[str] = None,
+    ) -> dict:
+        """
+        Edit an existing transaction.
+
+        Args:
+            transaction_id: Transaction ID
+            merchant: New merchant name
+            amount: New amount (balance will be adjusted)
+            category: New category
+            transaction_date: New date
+            notes: New notes
+            description: New description
+
+        Returns:
+            Updated transaction dict
+
+        Raises:
+            TransactionNotFoundError: If transaction not found
+        """
+        # Get current transaction
+        tx = self.get_transaction(transaction_id)
+        old_amount = Decimal(str(tx["amount"]))
+        tx_type = tx["type"]
+        account_id = tx["account_id"]
+
+        # Build update dict with only provided fields
+        updates = {}
+        if merchant is not None:
+            updates["merchant"] = merchant
+        if amount is not None:
+            updates["amount"] = float(amount)
+        if category is not None:
+            updates["category"] = category
+        if transaction_date is not None:
+            updates["date"] = transaction_date
+        if notes is not None:
+            updates["notes"] = notes
+        if description is not None:
+            updates["description"] = description
+
+        # If amount changed, adjust account balance
+        if amount is not None and amount != old_amount:
+            amount_diff = amount - old_amount
+
+            # Adjust balance based on transaction type
+            if tx_type == "expense":
+                # More expense = reduce balance more
+                self.account_service.adjust_balance(account_id, -amount_diff)
+            elif tx_type == "income":
+                # More income = increase balance more
+                self.account_service.adjust_balance(account_id, amount_diff)
+            elif tx_type == "transfer":
+                # Adjust both accounts
+                self.account_service.adjust_balance(account_id, -amount_diff)
+                if tx["to_account_id"]:
+                    self.account_service.adjust_balance(tx["to_account_id"], amount_diff)
+
+        # Update transaction
+        self.repo.update(transaction_id, **updates)
+
+        return self.repo.get_by_id(transaction_id)
