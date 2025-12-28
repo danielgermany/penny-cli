@@ -309,3 +309,47 @@ class TransactionService:
         month = month or now.month
 
         return self.repo.get_total_by_type(user_id, type, year, month)
+
+    def search_transactions(
+        self,
+        user_id: int,
+        search_text: Optional[str] = None,
+        start_date: Optional[date] = None,
+        end_date: Optional[date] = None,
+        min_amount: Optional[Decimal] = None,
+        max_amount: Optional[Decimal] = None,
+        category: Optional[str] = None,
+        account_id: Optional[int] = None,
+        transaction_type: Optional[str] = None,
+        limit: Optional[int] = None,
+    ) -> list[dict]:
+        """
+        Search and filter transactions.
+
+        Args:
+            user_id: User ID
+            search_text: Search in merchant, description, notes
+            start_date: Start date filter
+            end_date: End date filter
+            min_amount: Minimum amount filter
+            max_amount: Maximum amount filter
+            category: Category filter
+            account_id: Account filter
+            transaction_type: Transaction type filter
+            limit: Maximum results to return
+
+        Returns:
+            List of matching transaction dicts
+        """
+        return self.repo.search(
+            user_id=user_id,
+            search_text=search_text,
+            start_date=start_date,
+            end_date=end_date,
+            min_amount=min_amount,
+            max_amount=max_amount,
+            category=category,
+            account_id=account_id,
+            transaction_type=transaction_type,
+            limit=limit,
+        )
