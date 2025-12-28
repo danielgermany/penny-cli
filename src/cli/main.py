@@ -8,6 +8,7 @@ from .formatters import print_error, print_success, print_info
 from .commands.transaction import transaction
 from .commands.account import account
 from .commands.budget import budget
+from .commands.import_export import import_cmd, export_cmd
 
 
 @click.group()
@@ -85,6 +86,8 @@ def version(ctx):
 cli.add_command(transaction)
 cli.add_command(account)
 cli.add_command(budget)
+cli.add_command(import_cmd)
+cli.add_command(export_cmd)
 
 
 # Convenience aliases for common operations
