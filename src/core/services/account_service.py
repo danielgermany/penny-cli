@@ -153,3 +153,46 @@ class AccountService:
             Total balance
         """
         return self.repo.get_total_balance(user_id)
+
+    def update_account(self, account_id: int, **kwargs) -> dict:
+        """
+        Update account fields.
+
+        Args:
+            account_id: Account ID
+            **kwargs: Fields to update (name, type, institution, notes)
+
+        Returns:
+            Updated account dict
+
+        Raises:
+            AccountNotFoundError: If account not found
+        """
+        # Verify account exists
+        self.get_account(account_id)
+
+        # Validate type if being updated
+        if "type" in kwargs:
+            valid_types = ["checking", "savings", "credit_card", "investment"]
+            if kwargs["type"] not in valid_types:
+                raise ValueError(f"Invalid account type. Must be one of: {', '.join(valid_types)}")
+
+        # Update account
+        self.repo.update(account_id, **kwargs)
+        return self.get_account(account_id)
+
+    def delete_account(self, account_id: int) -> None:
+        """
+        Delete account (soft delete).
+
+        Args:
+            account_id: Account ID
+
+        Raises:
+            AccountNotFoundError: If account not found
+        """
+        # Verify account exists
+        self.get_account(account_id)
+
+        # Soft delete
+        self.repo.delete(account_id)

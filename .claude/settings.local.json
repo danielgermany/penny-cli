@@ -1,0 +1,20 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(rm:*)",
+      "Bash(finance init:*)",
+      "Bash(ANTHROPIC_API_KEY=\"invalid-key-to-test-fallback\" finance log:*)",
+      "Bash(find:*)",
+      "Bash(ANTHROPIC_API_KEY=\"invalid-key\" finance log:*)",
+      "Bash(ANTHROPIC_API_KEY=\"invalid\" finance log:*)",
+      "Bash(ANTHROPIC_API_KEY=\"invalid\" finance log \"Gas $45\")",
+      "Bash(finance list:*)",
+      "Bash(finance log:*)",
+      "Bash(finance --help:*)",
+      "Bash(finance category --help:*)",
+      "Bash(finance category list:*)",
+      "Bash(finance category stats:*)",
+      "Bash(finance category rename:*)"
+    ]
+  }
+}
