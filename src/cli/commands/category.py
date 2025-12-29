@@ -273,3 +273,114 @@ def category_stats(ctx, top):
     except Exception as e:
         print_error(f"Failed to show category stats: {str(e)}")
         raise
+
+
+@category.command("rule")
+@click.argument("action", type=click.Choice(["list", "add", "delete"]))
+@click.argument("merchant", required=False)
+@click.argument("new_category", required=False)
+@click.pass_context
+def manage_rules(ctx, action, merchant, new_category):
+    """
+    Manage category rules (merchant → category mappings).
+
+    Examples:
+      finance category rule list
+      finance category rule add "Amazon" "Shopping - Online"
+      finance category rule delete "Amazon"
+    """
+    container = ctx.obj["container"]
+    user_id = ctx.obj["user_id"]
+
+    try:
+        if action == "list":
+            # List all category rules
+            rules = container.category_rule_repo().get_all(user_id)
+
+            if not rules:
+                print_info("No category rules found.")
+                print_info("Add rules with: finance category rule add <merchant> <category>")
+                return
+
+            # Display table
+            console = Console()
+            table = Table(title="Category Rules")
+            table.add_column("Merchant", style="cyan")
+            table.add_column("Category", style="green")
+            table.add_column("Source", justify="center")
+            table.add_column("Times Used", justify="right", style="yellow")
+
+            for rule in rules:
+                # Format source
+                source_display = {
+                    "manual": "Manual",
+                    "ai": "AI",
+                    "learned": "Learned"
+                }.get(rule["source"], rule["source"])
+
+                table.add_row(
+                    rule["merchant"],
+                    rule["category"],
+                    source_display,
+                    str(rule["times_applied"])
+                )
+
+            console.print(table)
+            print_info(f"\nTotal rules: {len(rules)}")
+
+        elif action == "add":
+            # Add new category rule
+            if not merchant or not new_category:
+                print_error("Usage: finance category rule add <merchant> <category>")
+                return
+
+            # Check if rule already exists
+            existing = container.category_rule_repo().get_by_merchant(user_id, merchant)
+            if existing:
+                print_warning(f"Rule for '{merchant}' already exists: {existing['category']}")
+                if not click.confirm(f"Replace with '{new_category}'?"):
+                    print_info("Cancelled")
+                    return
+
+            # Create/update rule
+            from decimal import Decimal
+            container.category_rule_repo().upsert(
+                user_id=user_id,
+                merchant=merchant,
+                category=new_category,
+                confidence=Decimal("1.0"),
+                source="manual"
+            )
+
+            print_success(f"Category rule created: {merchant} -> {new_category}")
+            print_info("Future transactions from this merchant will use this category")
+
+        elif action == "delete":
+            # Delete category rule
+            if not merchant:
+                print_error("Usage: finance category rule delete <merchant>")
+                return
+
+            # Check if rule exists
+            existing = container.category_rule_repo().get_by_merchant(user_id, merchant)
+            if not existing:
+                print_error(f"No rule found for merchant '{merchant}'")
+                return
+
+            # Show current rule
+            print_info(f"Current rule: {merchant} -> {existing['category']}")
+            print_info(f"  Source: {existing['source']}")
+            print_info(f"  Times used: {existing['times_applied']}")
+
+            if not click.confirm("\nDelete this rule?"):
+                print_info("Cancelled")
+                return
+
+            # Delete rule
+            container.category_rule_repo().delete_by_merchant(user_id, merchant)
+            print_success(f"Rule deleted for '{merchant}'")
+            print_info("Future transactions will use AI categorization")
+
+    except Exception as e:
+        print_error(f"Failed to manage category rule: {str(e)}")
+        raise
