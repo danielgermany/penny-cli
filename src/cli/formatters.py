@@ -105,18 +105,33 @@ def print_account_table(accounts: list[dict]):
     console.print(table)
 
 
-def print_budget_status(budget_statuses: list[dict]):
-    """Print budget status."""
+def print_budget_status(budget_statuses: list[dict], show_alerts_only: bool = False):
+    """
+    Print budget status.
+
+    Args:
+        budget_statuses: List of budget status dicts
+        show_alerts_only: If True, only show budgets with alerts
+    """
     if not budget_statuses:
         print_info("No budgets found.")
         return
 
-    table = Table(title="Budget Status")
+    # Title based on mode
+    title = "Budget Alerts" if show_alerts_only else "Budget Status"
+    table = Table(title=title)
+    table.add_column("Status", justify="center", width=4)
     table.add_column("Category")
     table.add_column("Spent", justify="right")
     table.add_column("Limit", justify="right")
     table.add_column("Remaining", justify="right")
     table.add_column("Progress")
+
+    total_spent = Decimal("0")
+    total_limit = Decimal("0")
+    healthy_count = 0
+    warning_count = 0
+    over_count = 0
 
     for status in budget_statuses:
         if not status:
@@ -127,13 +142,23 @@ def print_budget_status(budget_statuses: list[dict]):
         remaining = status["remaining"]
         percentage = status["percentage"]
 
-        # Color based on status
+        # Track totals
+        total_spent += spent
+        total_limit += limit
+
+        # Determine status icon and color (using ASCII-safe characters)
         if status["is_over"]:
+            status_icon = "X"
             color = "red"
+            over_count += 1
         elif status["should_alert"]:
+            status_icon = "!"
             color = "yellow"
+            warning_count += 1
         else:
+            status_icon = "+"
             color = "green"
+            healthy_count += 1
 
         # Simple progress bar with ASCII characters
         filled = int(min(percentage, 100) // 5)
@@ -141,6 +166,7 @@ def print_budget_status(budget_statuses: list[dict]):
         progress_bar = f"[{color}]{'#' * filled}{'-' * empty}[/{color}]"
 
         table.add_row(
+            status_icon,
             status["budget"]["category"],
             f"[{color}]{format_currency(spent)}[/{color}]",
             format_currency(limit),
@@ -149,3 +175,19 @@ def print_budget_status(budget_statuses: list[dict]):
         )
 
     console.print(table)
+
+    # Summary footer
+    if not show_alerts_only:
+        summary_parts = []
+        if healthy_count > 0:
+            summary_parts.append(f"[green]{healthy_count} healthy[/green]")
+        if warning_count > 0:
+            summary_parts.append(f"[yellow]{warning_count} warning[/yellow]")
+        if over_count > 0:
+            summary_parts.append(f"[red]{over_count} over budget[/red]")
+
+        summary = " | ".join(summary_parts)
+        total_percentage = (total_spent / total_limit * 100) if total_limit > 0 else Decimal("0")
+
+        print_info(f"\nSummary: {summary}")
+        print_info(f"Total: {format_currency(total_spent)} / {format_currency(total_limit)} ({total_percentage:.1f}%)")
