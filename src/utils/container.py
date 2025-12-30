@@ -11,6 +11,7 @@ from ..core.services.account_service import AccountService
 from ..core.services.budget_service import BudgetService
 from ..core.services.recurring_service import RecurringService
 from ..core.services.analytics_service import AnalyticsService
+from ..core.services.decision_support_service import DecisionSupportService
 from ..ai.claude_client import ClaudeClient
 
 
@@ -41,6 +42,7 @@ class ServiceContainer:
         self._budget_service = None
         self._recurring_service = None
         self._analytics_service = None
+        self._decision_support_service = None
 
     @property
     def db(self):
@@ -121,3 +123,15 @@ class ServiceContainer:
         if not self._analytics_service:
             self._analytics_service = AnalyticsService(self.transaction_repo(), self.account_repo())
         return self._analytics_service
+
+    def decision_support_service(self):
+        """Get decision support service."""
+        if not self._decision_support_service:
+            self._decision_support_service = DecisionSupportService(
+                self.budget_service(),
+                self.recurring_service(),
+                self.analytics_service(),
+                self.account_service(),
+                self.ai_client
+            )
+        return self._decision_support_service
