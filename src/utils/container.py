@@ -10,6 +10,7 @@ from ..core.services.transaction_service import TransactionService
 from ..core.services.account_service import AccountService
 from ..core.services.budget_service import BudgetService
 from ..core.services.recurring_service import RecurringService
+from ..core.services.analytics_service import AnalyticsService
 from ..ai.claude_client import ClaudeClient
 
 
@@ -39,6 +40,7 @@ class ServiceContainer:
         self._account_service = None
         self._budget_service = None
         self._recurring_service = None
+        self._analytics_service = None
 
     @property
     def db(self):
@@ -113,3 +115,9 @@ class ServiceContainer:
         if not self._recurring_service:
             self._recurring_service = RecurringService(self.recurring_repo(), self.transaction_repo())
         return self._recurring_service
+
+    def analytics_service(self):
+        """Get analytics service."""
+        if not self._analytics_service:
+            self._analytics_service = AnalyticsService(self.transaction_repo(), self.account_repo())
+        return self._analytics_service
