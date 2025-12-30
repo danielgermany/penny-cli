@@ -10,6 +10,7 @@ from .commands.account import account
 from .commands.budget import budget
 from .commands.import_export import import_cmd, export_cmd
 from .commands.category import category
+from .commands.recurring import recurring
 
 
 @click.group()
@@ -90,6 +91,7 @@ cli.add_command(budget)
 cli.add_command(import_cmd)
 cli.add_command(export_cmd)
 cli.add_command(category)
+cli.add_command(recurring)
 
 
 # Convenience aliases for common operations

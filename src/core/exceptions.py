@@ -41,3 +41,9 @@ class CategoryNotFoundError(FinanceTrackerError):
     """Raised when category is not found."""
 
     pass
+
+
+class RecurringChargeNotFoundError(FinanceTrackerError):
+    """Raised when recurring charge is not found."""
+
+    pass

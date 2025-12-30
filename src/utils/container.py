@@ -5,9 +5,11 @@ from ..data.repositories.transaction_repo import TransactionRepository
 from ..data.repositories.account_repo import AccountRepository
 from ..data.repositories.budget_repo import BudgetRepository
 from ..data.repositories.category_rule_repo import CategoryRuleRepository
+from ..data.repositories.recurring_repo import RecurringRepository
 from ..core.services.transaction_service import TransactionService
 from ..core.services.account_service import AccountService
 from ..core.services.budget_service import BudgetService
+from ..core.services.recurring_service import RecurringService
 from ..ai.claude_client import ClaudeClient
 
 
@@ -30,11 +32,13 @@ class ServiceContainer:
         self._account_repo = None
         self._budget_repo = None
         self._category_rule_repo = None
+        self._recurring_repo = None
 
         # Service instances (cached)
         self._transaction_service = None
         self._account_service = None
         self._budget_service = None
+        self._recurring_service = None
 
     @property
     def db(self):
@@ -76,6 +80,12 @@ class ServiceContainer:
             self._category_rule_repo = CategoryRuleRepository(self.db)
         return self._category_rule_repo
 
+    def recurring_repo(self):
+        """Get recurring charge repository."""
+        if not self._recurring_repo:
+            self._recurring_repo = RecurringRepository(self.db)
+        return self._recurring_repo
+
     # Services
 
     def transaction_service(self):
@@ -97,3 +107,9 @@ class ServiceContainer:
         if not self._budget_service:
             self._budget_service = BudgetService(self.budget_repo(), self.transaction_repo())
         return self._budget_service
+
+    def recurring_service(self):
+        """Get recurring service."""
+        if not self._recurring_service:
+            self._recurring_service = RecurringService(self.recurring_repo(), self.transaction_repo())
+        return self._recurring_service
