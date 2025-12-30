@@ -2,8 +2,8 @@
 
 ## Project Status
 
-**Current Version:** v0.4.0
-**Last Updated:** 2025-12-29
+**Current Version:** v1.4.0
+**Last Updated:** 2025-12-30
 
 ---
 
@@ -29,201 +29,43 @@
 - ✅ Budget alerts (show approaching/over budget items)
 - ✅ Enhanced status display with visual indicators and summaries
 
----
+### Phase 0.5: Enhanced Account Management
+- ✅ Account edit (name, type, institution, notes)
+- ✅ Account delete with soft delete (preserves transactions)
+- ✅ Account transfer with paired transactions and balance updates
 
-## 🚧 Phase 0.5: Enhanced Account Management
+### Phase 1.1: Category Rules Management
+- ✅ List category rules with usage statistics
+- ✅ Add manual merchant → category mappings
+- ✅ Delete rules with confirmation
+- ✅ Shows rule source (Manual, AI, Learned)
 
-**Priority:** Medium
-**Estimated Effort:** Small (~2-3 hours)
+### Phase 1.2: Recurring Charge Detection
+- ✅ Database migration for recurring_charges table
+- ✅ Pattern detection algorithm (weekly, monthly, annual)
+- ✅ Confidence scoring based on consistency
+- ✅ Recurring charge management (add, list, cancel, pause, resume)
+- ✅ Upcoming charges with due date calculation
+- ✅ Auto-detect patterns from transaction history
 
-### Features
-1. **Account Edit Command**
-   - Update account name, institution
-   - Change account type
-   - Manual balance adjustments
-   - Example: `finance account edit "Checking" --name "Primary Checking"`
+### Phase 1.3: Reporting & Analytics
+- ✅ Monthly summary with income/expenses/savings
+- ✅ Month-over-month comparison
+- ✅ Category analysis with trends
+- ✅ Weekly spending trends with anomaly detection
+- ✅ Account summary with net worth
+- ✅ Top spending categories
 
-2. **Account Delete Command**
-   - Soft delete with confirmation
-   - Prevent deletion if transactions exist (or cascade delete with warning)
-   - Example: `finance account delete "Old Savings" -y`
-
-3. **Account Transfer Command**
-   - Move money between accounts
-   - Creates paired transfer transactions
-   - Updates both account balances
-   - Example: `finance account transfer "Checking" "Savings" 500`
-
-### Files to Modify
-- `src/cli/commands/account.py`
-- `src/core/services/account_service.py` (may need `edit_account()` method)
-
----
-
-## 🎯 Phase 1.1: Category Rules Management
-
-**Priority:** Medium
-**Estimated Effort:** Small (~2 hours)
-
-### Background
-Category rules infrastructure already exists (database table, repository) but has no CLI commands.
-
-### Features
-1. **List Category Rules**
-   - Show learned/manual categorization rules
-   - Display usage statistics
-   - Example: `finance category rules`
-
-2. **Add Manual Rule**
-   - Create merchant → category mapping
-   - Override AI categorization
-   - Example: `finance category rule add "Amazon" "Shopping - Online"`
-
-3. **Delete Rule**
-   - Remove categorization rule
-   - Fall back to AI categorization
-   - Example: `finance category rule delete "Amazon"`
-
-### Files to Modify
-- `src/cli/commands/category.py` (add `rules` subgroup)
-- Uses existing `CategoryRuleRepository`
+### Phase 1.4: Decision Support (AI-Powered)
+- ✅ Natural language affordability questions
+- ✅ AI-powered spending recommendations (YES/MAYBE/NO)
+- ✅ Context gathering from budgets, bills, and spending
+- ✅ Personalized advice with detailed reasoning
+- ✅ Rich formatted output with financial context
 
 ---
 
-## 🎯 Phase 1.2: Recurring Charge Detection
-
-**Priority:** High
-**Estimated Effort:** Large (~6-8 hours)
-
-### Background
-This is a key feature from the original plan but requires new database infrastructure.
-
-### Database Changes Needed
-1. Create migration: `002_recurring_charges.sql`
-```sql
-CREATE TABLE recurring_charges (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NOT NULL,
-    merchant TEXT NOT NULL,
-    category TEXT NOT NULL,
-    typical_amount DECIMAL(12,2),
-    frequency TEXT,  -- 'weekly', 'monthly', 'annual'
-    day_of_period INTEGER,
-    next_expected_date DATE,
-    status TEXT DEFAULT 'active',
-    first_seen DATE,
-    last_seen DATE,
-    occurrence_count INTEGER DEFAULT 0,
-    notes TEXT,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-);
-```
-
-### Features
-1. **Pattern Detection**
-   - Analyze transactions to find recurring patterns
-   - Match on merchant + similar amount + regular frequency
-   - Confidence threshold (2-3 occurrences)
-
-2. **Recurring Charge Management**
-   - `finance recurring list` - Show all recurring charges
-   - `finance recurring confirm <id>` - Confirm suspected recurring charge
-   - `finance recurring upcoming` - Show charges due soon
-   - `finance recurring cancel <id>` - Mark as cancelled
-
-3. **Integration with Decision Support**
-   - Factor upcoming recurring charges into affordability checks
-   - Alert when recurring charge is late/missing
-
-### Files to Create/Modify
-- `src/data/migrations/002_recurring_charges.sql`
-- `src/data/repositories/recurring_repo.py` (new)
-- `src/core/services/recurring_service.py` (new)
-- `src/cli/commands/recurring.py` (new)
-- Update `src/cli/main.py` to register recurring commands
-
----
-
-## 🎯 Phase 1.3: Reporting & Analytics
-
-**Priority:** High
-**Estimated Effort:** Medium (~4-5 hours)
-
-### Features
-1. **Monthly Summary Report**
-   - Total income, expenses, savings
-   - Category breakdown with percentages
-   - Top merchants
-   - Comparison to previous month
-   - Example: `finance report monthly`
-
-2. **Category Analysis**
-   - Detailed breakdown for specific category
-   - Trend over time
-   - Top merchants in category
-   - Example: `finance report category "Food & Dining - Restaurants"`
-
-3. **Spending Trends**
-   - Week-over-week comparison
-   - Month-over-month trends
-   - Identify unusual spending
-   - Example: `finance trends`
-
-4. **Account Summary**
-   - Net worth calculation
-   - Account balance history
-   - Income vs expenses by account
-   - Example: `finance report accounts`
-
-### Files to Create
-- `src/cli/commands/report.py` (new command group)
-- `src/core/services/analytics_service.py` (new)
-
-### Optional Enhancements
-- Export reports to PDF/HTML
-- Visualizations (charts) if we add plotting library
-- Custom date ranges for reports
-
----
-
-## 🎯 Phase 1.4: Decision Support ("Can I Afford?")
-
-**Priority:** Very High
-**Estimated Effort:** Medium (~5-6 hours)
-
-### Background
-This is a flagship feature from the original plan - AI-powered financial advice.
-
-### Features
-1. **Affordability Check**
-   - Natural language question: `finance check "Can I afford $80 dinner tonight?"`
-   - Considers:
-     - Current budget status (remaining in category)
-     - Upcoming recurring charges
-     - Savings goals (if implemented)
-     - Recent spending patterns
-   - Returns: Yes/Maybe/No with reasoning
-
-2. **Budget Impact Analysis**
-   - Show how purchase affects budgets
-   - Suggest alternatives if over budget
-   - Recommend lower amount if borderline
-
-3. **Smart Recommendations**
-   - "You have $150 left in dining budget, so yes!"
-   - "This would put you $20 over budget. Consider $60 instead."
-   - "You have Netflix due in 3 days ($15.99). After that, you'd have $45 left."
-
-### Implementation Approach
-- Use Claude API with structured prompt
-- Pass current budget status, upcoming bills, transaction history
-- Parse response for Yes/No + reasoning
-- Cache common queries to reduce API costs
-
-### Files to Create/Modify
-- `src/cli/commands/check.py` or add to `main.py`
-- Enhance `src/core/claude_client.py` with decision support prompts
-- Use existing `BudgetService` and `RecurringService` (Phase 1.2)
+## 🎯 Future Enhancements
 
 ---
 
@@ -299,35 +141,64 @@ This is a flagship feature from the original plan - AI-powered financial advice.
 
 ---
 
-## 📊 Feature Priority Matrix
+## 📊 Feature Priority Matrix (Remaining Features)
 
-| Feature | Priority | Effort | Impact | Next Phase |
-|---------|----------|--------|--------|------------|
-| Decision Support | Very High | Medium | Very High | 1.4 |
-| Reporting & Analytics | High | Medium | High | 1.3 |
-| Recurring Charges | High | Large | High | 1.2 |
-| Category Rules CLI | Medium | Small | Medium | 1.1 |
-| Enhanced Accounts | Medium | Small | Low | 0.5 |
-| Savings Goals | Low | Medium | Medium | 2.1 |
+| Feature | Priority | Effort | Impact | Phase |
+|---------|----------|--------|--------|-------|
+| Savings Goals | Medium | Medium | Medium | 2.1 |
+| Testing Suite | Medium | Large | High | Tech Debt |
+| Tags & Notes | Low | Small | Low | 2.2 |
+| Multi-User Support | Low | Large | Low | 2.3 |
+| Automated Bank Sync | Low | Very Large | High | 2.4 |
 | Web Interface | Low | Very Large | Medium | 2.5 |
+| Advanced Analytics | Low | Medium | Medium | 2.6 |
 
 ---
 
 ## 🎯 Recommended Next Steps
 
-### Immediate (Phase 0.5-1.1)
-1. **Enhanced Account Management** - Quick win, rounds out CRUD operations
-2. **Category Rules CLI** - Infrastructure exists, just needs commands
+### Core Features Complete! ✅
+All Phase 0 and Phase 1 features (0.1-1.4) have been implemented! The finance tracker now has:
+- Complete transaction, account, and budget management
+- AI-powered categorization and decision support
+- Recurring charge detection
+- Comprehensive reporting and analytics
 
-### Short-term (Phase 1.2-1.4)
-3. **Recurring Charge Detection** - High-value feature, requires database work
-4. **Reporting & Analytics** - Leverage existing data for insights
-5. **Decision Support** - Flagship AI feature, high user value
+### Next Priority Options
 
-### Long-term (Phase 2)
-6. **Savings Goals** - Natural extension of budgeting
-7. **Automated Bank Sync** - Reduces manual entry friction
-8. **Web Interface** - Better UX than CLI for some users
+#### Option A: Quality & Stability
+**Testing Suite (High Impact, Medium Priority)**
+- Add unit tests for repositories
+- Integration tests for services
+- CLI command tests
+- Set up pytest and coverage reporting
+- Estimated effort: Large (~8-10 hours)
+- Impact: Ensures reliability as features grow
+
+#### Option B: User Experience
+**Savings Goals (Medium Priority)**
+- Define and track savings targets
+- Progress visualization
+- Completion date projection
+- Savings recommendations
+- Estimated effort: Medium (~4-5 hours)
+- Impact: Natural extension of budgeting features
+
+#### Option C: Advanced Features
+**Tags & Notes Enhancement (Low Priority)**
+- Tag transactions for filtering
+- Enhanced notes and attachments
+- Business expense tracking
+- Estimated effort: Small (~2-3 hours)
+- Impact: Power user features
+
+#### Option D: Scale & Deployment
+**Multi-User Support or Web Interface (Low Priority)**
+- Requires significant architectural changes
+- Multi-user: Authentication, permissions, shared budgets
+- Web: FastAPI backend, frontend, deployment
+- Estimated effort: Very Large (20+ hours each)
+- Impact: Opens to wider audience
 
 ---
 
