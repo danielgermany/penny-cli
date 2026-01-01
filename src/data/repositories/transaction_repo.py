@@ -230,6 +230,7 @@ class TransactionRepository(BaseRepository):
         category: Optional[str] = None,
         account_id: Optional[int] = None,
         transaction_type: Optional[str] = None,
+        tags: Optional[list[str]] = None,
         limit: Optional[int] = None,
     ) -> list[dict]:
         """
@@ -245,6 +246,7 @@ class TransactionRepository(BaseRepository):
             category: Category filter
             account_id: Account filter
             transaction_type: Transaction type filter
+            tags: Filter by tag names (returns transactions with ANY of these tags)
             limit: Maximum results to return
 
         Returns:
@@ -288,6 +290,20 @@ class TransactionRepository(BaseRepository):
         if transaction_type:
             conditions.append("type = ?")
             params.append(transaction_type)
+
+        # Filter by tags (transactions with ANY of the specified tags)
+        if tags:
+            placeholders = ",".join("?" * len(tags))
+            conditions.append(f"""
+                id IN (
+                    SELECT tt.transaction_id
+                    FROM transaction_tags tt
+                    JOIN tags t ON tt.tag_id = t.id
+                    WHERE t.name IN ({placeholders})
+                )
+            """)
+            # Normalize tag names to lowercase
+            params.extend([tag.lower() for tag in tags])
 
         where_clause = " AND ".join(conditions)
         query = f"""

@@ -321,6 +321,7 @@ class TransactionService:
         category: Optional[str] = None,
         account_id: Optional[int] = None,
         transaction_type: Optional[str] = None,
+        tags: Optional[list[str]] = None,
         limit: Optional[int] = None,
     ) -> list[dict]:
         """
@@ -336,6 +337,7 @@ class TransactionService:
             category: Category filter
             account_id: Account filter
             transaction_type: Transaction type filter
+            tags: Filter by tags
             limit: Maximum results to return
 
         Returns:
@@ -350,6 +352,7 @@ class TransactionService:
             max_amount=max_amount,
             category=category,
             account_id=account_id,
+            tags=tags,
             transaction_type=transaction_type,
             limit=limit,
         )

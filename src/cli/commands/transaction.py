@@ -77,15 +77,16 @@ def log_transaction(ctx, description, account, category, date):
 @click.option("--min-amount", type=float, help="Minimum amount")
 @click.option("--max-amount", type=float, help="Maximum amount")
 @click.option("--type", "tx_type", help="Transaction type (expense/income/transfer)")
+@click.option("--tags", "-t", help="Filter by tags (comma-separated)")
 @click.pass_context
-def list_transactions(ctx, limit, month, search, category, account, start_date, end_date, min_amount, max_amount, tx_type):
+def list_transactions(ctx, limit, month, search, category, account, start_date, end_date, min_amount, max_amount, tx_type, tags):
     """List and filter transactions."""
     container = ctx.obj["container"]
     user_id = ctx.obj["user_id"]
 
     try:
         # Check if any filters are applied
-        has_filters = any([search, category, account, start_date, end_date, min_amount is not None, max_amount is not None, tx_type])
+        has_filters = any([search, category, account, start_date, end_date, min_amount is not None, max_amount is not None, tx_type, tags])
 
         if month and not has_filters:
             # Parse month
@@ -124,6 +125,11 @@ def list_transactions(ctx, limit, month, search, category, account, start_date, 
             min_amt = Decimal(str(min_amount)) if min_amount is not None else None
             max_amt = Decimal(str(max_amount)) if max_amount is not None else None
 
+            # Parse tags (comma-separated)
+            tag_list = None
+            if tags:
+                tag_list = [t.strip() for t in tags.split(",")]
+
             transactions = container.transaction_service().search_transactions(
                 user_id=user_id,
                 search_text=search,
@@ -134,6 +140,7 @@ def list_transactions(ctx, limit, month, search, category, account, start_date, 
                 category=category,
                 account_id=account_id,
                 transaction_type=tx_type,
+                tags=tag_list,
                 limit=limit,
             )
         else:

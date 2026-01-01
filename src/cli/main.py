@@ -14,6 +14,7 @@ from .commands.recurring import recurring
 from .commands.report import report
 from .commands.check import check_affordability
 from .commands.savings import savings
+from .commands.tag import tag
 
 
 @click.group()
@@ -98,6 +99,7 @@ cli.add_command(recurring)
 cli.add_command(report)
 cli.add_command(check_affordability)
 cli.add_command(savings)
+cli.add_command(tag)
 
 
 # Convenience aliases for common operations

@@ -7,6 +7,7 @@ from ..data.repositories.budget_repo import BudgetRepository
 from ..data.repositories.category_rule_repo import CategoryRuleRepository
 from ..data.repositories.recurring_repo import RecurringRepository
 from ..data.repositories.savings_goal_repo import SavingsGoalRepository
+from ..data.repositories.tag_repo import TagRepository
 from ..core.services.transaction_service import TransactionService
 from ..core.services.account_service import AccountService
 from ..core.services.budget_service import BudgetService
@@ -38,6 +39,7 @@ class ServiceContainer:
         self._category_rule_repo = None
         self._recurring_repo = None
         self._savings_goal_repo = None
+        self._tag_repo = None
 
         # Service instances (cached)
         self._transaction_service = None
@@ -99,6 +101,12 @@ class ServiceContainer:
         if not self._savings_goal_repo:
             self._savings_goal_repo = SavingsGoalRepository(self.db)
         return self._savings_goal_repo
+
+    def tag_repo(self):
+        """Get tag repository."""
+        if not self._tag_repo:
+            self._tag_repo = TagRepository(self.db)
+        return self._tag_repo
 
     # Services
 

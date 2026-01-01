@@ -63,6 +63,24 @@
 - ✅ Personalized advice with detailed reasoning
 - ✅ Rich formatted output with financial context
 
+### Phase 2.1: Savings Goals
+- ✅ Database migration for savings_goals table
+- ✅ SavingsGoalRepository with full CRUD operations
+- ✅ SavingsGoalService with business logic and recommendations
+- ✅ CLI commands (add, list, view, contribute, withdraw, edit, status, delete, recommend)
+- ✅ Progress tracking with visual indicators
+- ✅ AI-powered savings recommendations
+- ✅ Auto-completion when target is reached
+
+### Phase 2.2: Tags & Notes
+- ✅ Database migration for tags and transaction_tags tables
+- ✅ TagRepository with full CRUD and association management
+- ✅ Tag filtering support in TransactionRepository search
+- ✅ CLI commands (create, list, add, remove, show, find, stats, delete)
+- ✅ Multi-tag filtering in transaction list (--tags option)
+- ✅ Tag usage statistics
+- ✅ Auto-create tags when tagging transactions
+
 ---
 
 ## 🎯 Future Enhancements
@@ -70,17 +88,6 @@
 ---
 
 ## 🔮 Phase 2: Advanced Features
-
-### Phase 2.1: Savings Goals
-- Define savings targets
-- Track progress
-- Project completion date
-- Recommend savings amounts
-
-### Phase 2.2: Tags & Notes
-- Tag transactions (e.g., "business", "gift", "tax-deductible")
-- Filter by tags
-- Enhanced notes/attachments
 
 ### Phase 2.3: Multi-User Support
 - User authentication
