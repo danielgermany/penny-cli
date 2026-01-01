@@ -6,12 +6,14 @@ from ..data.repositories.account_repo import AccountRepository
 from ..data.repositories.budget_repo import BudgetRepository
 from ..data.repositories.category_rule_repo import CategoryRuleRepository
 from ..data.repositories.recurring_repo import RecurringRepository
+from ..data.repositories.savings_goal_repo import SavingsGoalRepository
 from ..core.services.transaction_service import TransactionService
 from ..core.services.account_service import AccountService
 from ..core.services.budget_service import BudgetService
 from ..core.services.recurring_service import RecurringService
 from ..core.services.analytics_service import AnalyticsService
 from ..core.services.decision_support_service import DecisionSupportService
+from ..core.services.savings_goal_service import SavingsGoalService
 from ..ai.claude_client import ClaudeClient
 
 
@@ -35,6 +37,7 @@ class ServiceContainer:
         self._budget_repo = None
         self._category_rule_repo = None
         self._recurring_repo = None
+        self._savings_goal_repo = None
 
         # Service instances (cached)
         self._transaction_service = None
@@ -43,6 +46,7 @@ class ServiceContainer:
         self._recurring_service = None
         self._analytics_service = None
         self._decision_support_service = None
+        self._savings_goal_service = None
 
     @property
     def db(self):
@@ -90,6 +94,12 @@ class ServiceContainer:
             self._recurring_repo = RecurringRepository(self.db)
         return self._recurring_repo
 
+    def savings_goal_repo(self):
+        """Get savings goal repository."""
+        if not self._savings_goal_repo:
+            self._savings_goal_repo = SavingsGoalRepository(self.db)
+        return self._savings_goal_repo
+
     # Services
 
     def transaction_service(self):
@@ -135,3 +145,13 @@ class ServiceContainer:
                 self.ai_client
             )
         return self._decision_support_service
+
+    def savings_goal_service(self):
+        """Get savings goal service."""
+        if not self._savings_goal_service:
+            self._savings_goal_service = SavingsGoalService(
+                self.savings_goal_repo(),
+                self.transaction_repo(),
+                self.analytics_service()
+            )
+        return self._savings_goal_service

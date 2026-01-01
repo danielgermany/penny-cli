@@ -13,6 +13,7 @@ from .commands.category import category
 from .commands.recurring import recurring
 from .commands.report import report
 from .commands.check import check_affordability
+from .commands.savings import savings
 
 
 @click.group()
@@ -96,6 +97,7 @@ cli.add_command(category)
 cli.add_command(recurring)
 cli.add_command(report)
 cli.add_command(check_affordability)
+cli.add_command(savings)
 
 
 # Convenience aliases for common operations
