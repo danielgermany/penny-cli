@@ -8,6 +8,7 @@ from ..data.repositories.category_rule_repo import CategoryRuleRepository
 from ..data.repositories.recurring_repo import RecurringRepository
 from ..data.repositories.savings_goal_repo import SavingsGoalRepository
 from ..data.repositories.tag_repo import TagRepository
+from ..data.repositories.user_repo import UserRepository
 from ..core.services.transaction_service import TransactionService
 from ..core.services.account_service import AccountService
 from ..core.services.budget_service import BudgetService
@@ -15,6 +16,7 @@ from ..core.services.recurring_service import RecurringService
 from ..core.services.analytics_service import AnalyticsService
 from ..core.services.decision_support_service import DecisionSupportService
 from ..core.services.savings_goal_service import SavingsGoalService
+from ..core.services.auth_service import AuthService
 from ..ai.claude_client import ClaudeClient
 
 
@@ -40,6 +42,7 @@ class ServiceContainer:
         self._recurring_repo = None
         self._savings_goal_repo = None
         self._tag_repo = None
+        self._user_repo = None
 
         # Service instances (cached)
         self._transaction_service = None
@@ -49,6 +52,7 @@ class ServiceContainer:
         self._analytics_service = None
         self._decision_support_service = None
         self._savings_goal_service = None
+        self._auth_service = None
 
     @property
     def db(self):
@@ -108,6 +112,12 @@ class ServiceContainer:
             self._tag_repo = TagRepository(self.db)
         return self._tag_repo
 
+    def user_repo(self):
+        """Get user repository."""
+        if not self._user_repo:
+            self._user_repo = UserRepository(self.db)
+        return self._user_repo
+
     # Services
 
     def transaction_service(self):
@@ -163,3 +173,12 @@ class ServiceContainer:
                 self.analytics_service()
             )
         return self._savings_goal_service
+
+    def auth_service(self):
+        """Get authentication service."""
+        if not self._auth_service:
+            self._auth_service = AuthService(
+                self.user_repo(),
+                self.config
+            )
+        return self._auth_service

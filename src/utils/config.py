@@ -31,7 +31,10 @@ class Config:
 
         # User Settings
         self.default_currency = os.getenv("DEFAULT_CURRENCY", "USD")
-        self.user_id = int(os.getenv("USER_ID", "1"))
+
+        # Check for session file first, then fall back to env var
+        self.session_file = Path.home() / ".finance_tracker_session"
+        self.user_id = self._get_current_user_id()
 
         # Paths
         self.config_dir = Path(__file__).parent.parent.parent / "config"
@@ -52,6 +55,24 @@ class Config:
             return False, "DATABASE_PATH not set."
 
         return True, None
+
+    def _get_current_user_id(self) -> int:
+        """
+        Get current user ID from session file or environment.
+
+        Returns:
+            User ID
+        """
+        # Check session file first
+        if self.session_file.exists():
+            try:
+                with open(self.session_file, "r") as f:
+                    return int(f.read().strip())
+            except (ValueError, IOError):
+                pass
+
+        # Fall back to environment variable
+        return int(os.getenv("USER_ID", "1"))
 
     @property
     def is_initialized(self) -> bool:

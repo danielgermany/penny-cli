@@ -15,6 +15,7 @@ from .commands.report import report
 from .commands.check import check_affordability
 from .commands.savings import savings
 from .commands.tag import tag
+from .commands.user import user
 
 
 @click.group()
@@ -100,6 +101,7 @@ cli.add_command(report)
 cli.add_command(check_affordability)
 cli.add_command(savings)
 cli.add_command(tag)
+cli.add_command(user)
 
 
 # Convenience aliases for common operations

@@ -2,8 +2,8 @@
 
 ## Project Status
 
-**Current Version:** v1.4.0
-**Last Updated:** 2025-12-30
+**Current Version:** v2.3.0
+**Last Updated:** 2026-01-01
 
 ---
 
@@ -81,6 +81,16 @@
 - ✅ Tag usage statistics
 - ✅ Auto-create tags when tagging transactions
 
+### Phase 2.3: Multi-User Support
+- ✅ Database migration for user authentication fields
+- ✅ UserRepository with full CRUD operations
+- ✅ AuthService with password hashing (SHA-256) and session management
+- ✅ Session file-based user switching (~/.finance_tracker_session)
+- ✅ CLI commands (register, login, logout, current, list, delete, password)
+- ✅ Per-user data isolation (all data scoped to user_id)
+- ✅ Optional password protection per user
+- ✅ Config integration for automatic session loading
+
 ---
 
 ## 🎯 Future Enhancements
@@ -88,11 +98,6 @@
 ---
 
 ## 🔮 Phase 2: Advanced Features
-
-### Phase 2.3: Multi-User Support
-- User authentication
-- Shared budgets
-- Permissions
 
 ### Phase 2.4: Automated Bank Sync
 - Plaid API integration
