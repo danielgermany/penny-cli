@@ -2,8 +2,8 @@
 
 ## Project Status
 
-**Current Version:** v2.3.0
-**Last Updated:** 2026-01-01
+**Current Version:** v2.4.0
+**Last Updated:** 2026-01-02
 
 ---
 
@@ -91,6 +91,17 @@
 - ✅ Optional password protection per user
 - ✅ Config integration for automatic session loading
 
+### Phase 2.4: Planned Purchases
+- ✅ Database migration for planned_purchases table
+- ✅ PlannedPurchaseRepository with full CRUD operations
+- ✅ PlannedPurchaseService with affordability analysis
+- ✅ Priority-based shopping list (1=Critical → 5=Want/Luxury)
+- ✅ CLI commands (add, list, view, bought, update, delete, recommend)
+- ✅ Cascading priority display with affordability indicators
+- ✅ AI-powered purchase recommendations (now/soon/later/skip)
+- ✅ Transaction linking when purchases are completed
+- ✅ Deadline tracking and urgency detection
+
 ---
 
 ## 🎯 Future Enhancements
@@ -99,19 +110,19 @@
 
 ## 🔮 Phase 2: Advanced Features
 
-### Phase 2.4: Automated Bank Sync
+### Phase 2.5: Automated Bank Sync
 - Plaid API integration
 - Automatic transaction import
 - Balance reconciliation
 - Duplicate detection
 
-### Phase 2.5: Web Interface
+### Phase 2.6: Web Interface
 - FastAPI backend
 - HTMX frontend (lightweight)
 - Dashboard with charts
 - Mobile-responsive
 
-### Phase 2.6: Advanced Analytics
+### Phase 2.7: Advanced Analytics
 - Spending forecasting
 - Budget recommendations
 - Seasonal pattern detection
@@ -157,28 +168,29 @@
 
 | Feature | Priority | Effort | Impact | Phase |
 |---------|----------|--------|--------|-------|
-| Savings Goals | Medium | Medium | Medium | 2.1 |
 | Testing Suite | Medium | Large | High | Tech Debt |
-| Tags & Notes | Low | Small | Low | 2.2 |
-| Multi-User Support | Low | Large | Low | 2.3 |
-| Automated Bank Sync | Low | Very Large | High | 2.4 |
-| Web Interface | Low | Very Large | Medium | 2.5 |
-| Advanced Analytics | Low | Medium | Medium | 2.6 |
+| Automated Bank Sync | Low | Very Large | High | 2.5 |
+| Web Interface | Low | Very Large | Medium | 2.6 |
+| Advanced Analytics | Low | Medium | Medium | 2.7 |
 
 ---
 
 ## 🎯 Recommended Next Steps
 
-### Core Features Complete! ✅
-All Phase 0 and Phase 1 features (0.1-1.4) have been implemented! The finance tracker now has:
+### Phase 2 Features Complete! ✅
+All Phase 0, Phase 1, and Phase 2.1-2.4 features have been implemented! The finance tracker now has:
 - Complete transaction, account, and budget management
 - AI-powered categorization and decision support
-- Recurring charge detection
+- Recurring charge detection and management
 - Comprehensive reporting and analytics
+- Savings goals with progress tracking
+- Tags and notes for enhanced organization
+- Multi-user support with authentication
+- Planned purchases with priority-based shopping lists
 
 ### Next Priority Options
 
-#### Option A: Quality & Stability
+#### Option A: Quality & Stability (Recommended)
 **Testing Suite (High Impact, Medium Priority)**
 - Add unit tests for repositories
 - Integration tests for services
@@ -187,30 +199,32 @@ All Phase 0 and Phase 1 features (0.1-1.4) have been implemented! The finance tr
 - Estimated effort: Large (~8-10 hours)
 - Impact: Ensures reliability as features grow
 
-#### Option B: User Experience
-**Savings Goals (Medium Priority)**
-- Define and track savings targets
-- Progress visualization
-- Completion date projection
-- Savings recommendations
-- Estimated effort: Medium (~4-5 hours)
-- Impact: Natural extension of budgeting features
+#### Option B: Advanced Integration
+**Automated Bank Sync (Phase 2.5)**
+- Plaid API integration
+- Automatic transaction import
+- Balance reconciliation
+- Duplicate detection
+- Estimated effort: Very Large (20+ hours)
+- Impact: Eliminates manual data entry
 
-#### Option C: Advanced Features
-**Tags & Notes Enhancement (Low Priority)**
-- Tag transactions for filtering
-- Enhanced notes and attachments
-- Business expense tracking
-- Estimated effort: Small (~2-3 hours)
-- Impact: Power user features
-
-#### Option D: Scale & Deployment
-**Multi-User Support or Web Interface (Low Priority)**
-- Requires significant architectural changes
-- Multi-user: Authentication, permissions, shared budgets
-- Web: FastAPI backend, frontend, deployment
-- Estimated effort: Very Large (20+ hours each)
+#### Option C: User Interface
+**Web Interface (Phase 2.6)**
+- FastAPI backend
+- HTMX frontend (lightweight)
+- Dashboard with charts
+- Mobile-responsive design
+- Estimated effort: Very Large (25+ hours)
 - Impact: Opens to wider audience
+
+#### Option D: Intelligence
+**Advanced Analytics (Phase 2.7)**
+- Spending forecasting
+- Budget recommendations
+- Seasonal pattern detection
+- Financial health score
+- Estimated effort: Medium (~6-8 hours)
+- Impact: Deeper insights into financial behavior
 
 ---
 
